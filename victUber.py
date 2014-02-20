@@ -36,11 +36,26 @@ def getUser():
 	userID = int(request.args.get('userid','' ))
 	return json.dumps(allUsers[userID].__dict__)
 
+#@victUber.route('getAllUsers')
+#def getAllUsers():
+
 #@victUber.route('/updateUser')
 #def updateUser():
 
 #@victUber.route('/deleteUser')
 #def deleteUser():
+
+#@victUber.route('/createLoc')
+#def createLoc():
+
+#@victUber.route('/getLoc')
+#def getLoc():
+
+#@victUber.route('/updateLoc')
+#def updateLoc():
+
+#@victUber.route('/deleteLoc')
+#def deleteLoc():
 
 if __name__ == '__main__':
     victUber.run(debug = True)
