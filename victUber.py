@@ -14,7 +14,7 @@ class mem: pass
 mem.userIndex = 0
 mem.locIndex = 0
 
-patientZero = User(0, "Sadi", list(), "mypassword")
+patientZero = User(0, "Sadi", dict(), "mypassword")
 
 allUsers = dict()
 allUsers[0] = patientZero
@@ -33,7 +33,7 @@ def createUser():
 	mem.userIndex = mem.userIndex + 1
 	userID = mem.userIndex
 	username = request.args.get('username','')
-	userID[username] = userID
+	userIDList[username] = userID
 	locations = dict()
 	password = request.args.get('password','')
 	allUsers[userID] = User(userID, username, locations, password)
@@ -52,7 +52,6 @@ def getUser():
 	username = request.args.get('username','')	#get username as param
 	password = request.args.get('password','')	#get password
 	userID = userIDList[username]			#get their ID
-	locationIndeces = allUsers[userID].locations	#get location indeces
 
 	userLocationIndex = dict()
 	userLocationLat = dict()
@@ -60,13 +59,14 @@ def getUser():
 	userLocationAddress = dict()
 	userLocationName = dict()
 
-	for i in range(0, len(locationIndeces)):
-		userLocationIndex[i] = allLocations[locationIndeces[i]].locIndex
-		userLocationLat[i] = allLocations[locationIndeces[i]].lat
-		userLocationLng[i] = allLocations[locationIndeces[i]].lng
-		userLocationAddress[i] = allLocations[locationIndeces[i]].address
-		userLocationName[i] = allLocations[locationIndeces[i]].name
+	for v in allUsers[userID].locations.items():
+		userLocationIndex[v] = allLocations[v].locIndex
+		userLocationLat[v] = allLocations[v].lat
+		userLocationLng[v] = allLocations[v].lng
+		userLocationAddress[v] = allLocations[v].address
+		userLocationName[v] = allLocations[v].name
 
+#	for v in userLocationIndex.items()
 	user = [
 		{
 			'userIndex': userID,
@@ -80,9 +80,9 @@ def getUser():
 						'address': userLocationAddress,
 						'name': userLocationName
 					}
-				     ]
+			     	]
 		}
-		
+	
 		]
 
 	return jsonify( {'user': user} )
@@ -106,13 +106,15 @@ def deleteUser():
 @victUber.route('/createLoc')
 def createLoc():
 	userID = int(request.args.get('userid',''))
-	allLocations[mem.locIndex].locIndex = mem.locIndex
-	allLocations[mem.locIndex].lat = int(request.args.get('lat',''))
-	allLocations[mem.locIndex].lng = int(request.args.get('lng',''))
-	allLocations[mem.locIndex].address = request.args.get('address','')
-	allLocations[mem.locIndex].name = request.args.get('name','')
+	locIndex = mem.locIndex
+	lat = int(request.args.get('lat',''))
+	lng = int(request.args.get('lng',''))
+	address = request.args.get('address','')
+	name = request.args.get('name','')
 
-	allUsers[userID].locations[len(allUsers[userID].locations)] = mem.locIndex #add the loc index to this user
+	allLocations[mem.locIndex] = Location(mem.locIndex, lat, lng, address, name)
+
+	allUsers[userID].locations[mem.locIndex] = mem.locIndex #add the loc index to this user
 
 	mem.locIndex= mem.locIndex + 1
 
